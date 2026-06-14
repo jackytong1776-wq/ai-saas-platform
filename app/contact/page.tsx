@@ -1,37 +1,64 @@
-export default function Contact() {
+'use client'
+
+import { useState } from 'react'
+
+export default function ContactPage() {
+  const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitted(true)
+  }
+
   return (
-    <div className="py-16">
-      <div className="container mx-auto px-4 max-w-2xl">
-        <h1 className="text-4xl font-bold text-center mb-4">Contact Us</h1>
-        <p className="text-gray-600 text-center mb-12">
-          Get in touch with our team.
-        </p>
+    <main className="min-h-screen py-16 px-4">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-4xl font-bold text-center mb-12">Contact Us</h1>
         
-        <form className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium mb-2">Email</label>
-            <input type="email" className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="you@example.com" />
+        {submitted ? (
+          <div className="text-center p-8 bg-green-50 rounded-lg">
+            <h2 className="text-2xl font-bold text-green-600 mb-2">Thank You!</h2>
+            <p className="text-gray-600">We will get back to you soon.</p>
           </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-2">Subject</label>
-            <input type="text" className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="How can we help?" />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-2">Message</label>
-            <textarea rows={5} className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Your message..."></textarea>
-          </div>
-          
-          <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700">
-            Send Message
-          </button>
-        </form>
-        
-        <p className="text-center text-gray-500 mt-8">
-          Or email us directly at <span className="text-blue-600">support@aisaas.example</span>
-        </p>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium mb-2">Name</label>
+              <input
+                type="text"
+                required
+                className="w-full border rounded-lg px-4 py-3"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Email</label>
+              <input
+                type="email"
+                required
+                className="w-full border rounded-lg px-4 py-3"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Message</label>
+              <textarea
+                required
+                rows={5}
+                className="w-full border rounded-lg px-4 py-3"
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })}
+              />
+            </div>
+            <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
+              Send Message
+            </button>
+          </form>
+        )}
       </div>
-    </div>
+    </main>
   )
 }

@@ -1,15 +1,29 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import OpenAI from 'openai'
 
-export async function POST(request: Request) {
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+})
+
+export async function POST(request: NextRequest) {
   try {
     const { message, model } = await request.json()
-    
-    // Demo response - replace with actual OpenAI call
-    return NextResponse.json({
-      reply: `You said: ${message}. This is a demo response. Configure your OpenAI API key to enable real AI responses.`,
+
+    if (!message) {
+      return NextResponse.json({ error: 'Message is required' }, { status: 400 })
+    }
+
+    const completion = await openai.chat.completions.create({
       model: model || 'gpt-4o-mini',
+      messages: [{ role: 'user', content: message }],
+    })
+
+    return NextResponse.json({
+      reply: completion.choices[0].message.content,
+      usage: completion.usage,
     })
   } catch (error) {
-    return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+    console.error('OpenAI API Error:', error)
+    return NextResponse.json({ error: 'Failed to process request' }, { status: 500 })
   }
 }
